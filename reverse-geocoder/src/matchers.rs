@@ -7,6 +7,7 @@ pub trait Matcher {
 }
 
 /// The field matches the pattern exactly
+#[derive(Clone)]
 pub struct ExactMatcher {
     pattern: String,
 }
@@ -23,6 +24,7 @@ impl Matcher for ExactMatcher {
 }
 
 /// The contains the pattern case insensitively
+#[derive(Clone)]
 pub struct IContainsMatcher {
     pattern: Regex,
 }

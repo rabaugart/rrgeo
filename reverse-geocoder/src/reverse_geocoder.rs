@@ -149,7 +149,11 @@ impl ReverseGeocoder {
         }
     }
 
-    /// Search for a city based on different criteria
+    /// Search for a city based on different criteria, i.e. use the
+    /// offline city data of this package
+    /// for forward geo location.
+    /// 
+    /// A maximum of 100 search results is returned.
     /// 
     /// # Example:
     /// ```
@@ -159,13 +163,13 @@ impl ReverseGeocoder {
     ///
     /// fn main() {
     ///     let geocoder = ReverseGeocoder::new();
-    ///     let cities = geocoder.search_city( &Name::<ExactMatcher>::new("Chicago"));
+    ///     let cities = geocoder.search_city( Name::<ExactMatcher>::new("Chicago"));
     ///     assert_eq!(cities.len(),1);
     ///     let ([lat,lon],rec) = cities[0];
     ///     println!("Found one city called {} in {} at {}/{}", rec.name, rec.cc, lat, lon );
     /// }
     ///```
-    pub fn search_city(&self, f: &dyn city_filter::CityFilter) -> Vec<&([f64;2],Record)> {
+    pub fn search_city<T:city_filter::CityFilter>(&self, f: T) -> Vec<&([f64;2],Record)> {
         self.locations
             .iter()
             .filter(|(_l, r)| f.rec_match(r))
