@@ -20,8 +20,9 @@ use serde_derive::{Deserialize, Serialize};
 use std::fmt;
 use std::path::Path;
 
-mod city_filter;
-mod filters;
+pub mod city_filter;
+pub mod filters;
+pub mod matchers;
 
 const MAX_NUM_RESULTS : usize = 100;
 
