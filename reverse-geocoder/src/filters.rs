@@ -1,6 +1,7 @@
 
 use crate::{city_filter::CityFilter, matchers::Matcher, Record};
 
+/// Match the name field of the record
 pub struct Name<T:Matcher> {
     m : T,
 }
@@ -17,13 +18,21 @@ impl<T:Matcher> CityFilter for Name<T> {
     }
 }
 
+/// Match the country of the record exactly.
 pub struct Country {
-    name : String,
+    country_code : String,
+}
+
+impl Country {
+    /// Create country filter with a ISO 3166 country code, e.g. "US"
+    pub fn new( country_code:&str ) -> Self {
+        Self { country_code: country_code.to_owned() }
+    }
 }
 
 impl CityFilter for Country {
     fn rec_match( &self, r: &Record ) -> bool {
-        r.cc == self.name
+        r.cc == self.country_code
     }
 }
 
@@ -34,13 +43,13 @@ mod filter_tests {
     #[test]
     fn name() {
         let rc = crate::ReverseGeocoder::new();
-        let ci = rc.search_city( &Name::<ExactMatcher>::new("Helmstedt"));
+        let ci = rc.search_city( &Name::<ExactMatcher>::new("Chicago"));
         assert_eq!(ci.len(),1);
         let ([lat,lon],rec) = ci[0];
-        assert_eq!(rec.name,"Helmstedt");
-        assert_eq!(rec.cc,"DE");
-        assert!( *lat > 52.2 && *lat<52.3);
-        assert!( *lon > 11.0 && *lon<11.1);
+        assert_eq!(rec.name,"Chicago");
+        assert_eq!(rec.cc,"US");
+        assert!( *lat > 41.8 && *lat<41.9);
+        assert!( *lon > -87.7 && *lon< -87.6);
     }
 
     #[test]
@@ -56,7 +65,7 @@ mod filter_tests {
     #[test]
     fn country() {
         let rc = crate::ReverseGeocoder::new();
-        let ci = rc.search_city( &Country{name:"MC".to_owned()});
+        let ci = rc.search_city( &Country::new("MC"));
         assert_eq!(ci.len(),6);
     }
 }

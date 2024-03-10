@@ -149,6 +149,22 @@ impl ReverseGeocoder {
         }
     }
 
+    /// Search for a city based on different criteria
+    /// 
+    /// # Example:
+    /// ```
+    /// use reverse_geocoder::ReverseGeocoder;
+    /// use reverse_geocoder::filters::Name;
+    /// use reverse_geocoder::matchers::ExactMatcher;
+    ///
+    /// fn main() {
+    ///     let geocoder = ReverseGeocoder::new();
+    ///     let cities = geocoder.search_city( &Name::<ExactMatcher>::new("Chicago"));
+    ///     assert_eq!(cities.len(),1);
+    ///     let ([lat,lon],rec) = cities[0];
+    ///     println!("Found one city called {} in {} at {}/{}", rec.name, rec.cc, lat, lon );
+    /// }
+    ///```
     pub fn search_city(&self, f: &dyn city_filter::CityFilter) -> Vec<&([f64;2],Record)> {
         self.locations
             .iter()
