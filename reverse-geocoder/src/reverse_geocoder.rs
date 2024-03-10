@@ -20,6 +20,11 @@ use serde_derive::{Deserialize, Serialize};
 use std::fmt;
 use std::path::Path;
 
+mod city_filter;
+mod filters;
+
+const MAX_NUM_RESULTS : usize = 100;
+
 /// A parsed location.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Record {
@@ -141,6 +146,14 @@ impl ReverseGeocoder {
             distance: nearest_neighbor.distance,
             record: &nearest.1,
         }
+    }
+
+    pub fn search_city(&self, f: &dyn city_filter::CityFilter) -> Vec<&([f64;2],Record)> {
+        self.locations
+            .iter()
+            .filter(|(_l, r)| f.rec_match(r))
+            .take(MAX_NUM_RESULTS)
+            .collect()
     }
 }
 
